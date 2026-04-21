@@ -14,7 +14,7 @@ class Jugador:
         return f"{self.numero_camiseta} - {self.apellido} ({self.posicion}) - Minutos jugados: {self.minutos_jugados}"
 
 
-# Definir la clase que hereda de Jugador
+# Definimos la clase que hereda de Jugador (el jugador de campo es un jugador base con la diferencia que puede marcar goles)
 class JugadorCampo(Jugador):
     def __init__(self, numero_camiseta, apellido, posicion, minutos_jugados, goles_marcados):
         super().__init__(numero_camiseta, apellido, posicion, minutos_jugados)
@@ -24,12 +24,13 @@ class JugadorCampo(Jugador):
         return super().mostrar_jugador() + f" - Goles: {self.goles_marcados}"
 
 
-# Definir la clase Arquero, que hereda de Jugador
+# Definir la clase Arquero, que hereda de Jugador de base y no puede marcar goles
 class Arquero(Jugador):
     def __init__(self, numero_camiseta, apellido, minutos_jugados):
         super().__init__(numero_camiseta, apellido, "Arquero", minutos_jugados)
 
 
+# El equipo es una lista de jugadores
 class Equipo:
     def __init__(self):
         self.jugadores = []
@@ -45,7 +46,6 @@ miEquipo = Equipo()
 
 
 # Carga desde interfaz
-
 def agregar_jugador():
     posiciones = ["arquero", "defensor", "mediocampista", "delantero"]
     posiciones_de_campo = ["defensor", "mediocampista", "delantero"]
