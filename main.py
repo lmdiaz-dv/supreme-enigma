@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox, simpledialog
 
 
-# Definir la clase base Jugador
+# Definimos la clase base Jugador
 class Jugador:
     def __init__(self, numero_camiseta, apellido, posicion, minutos_jugados):
         self.numero_camiseta = numero_camiseta
