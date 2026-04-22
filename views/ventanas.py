@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 from tkinter import messagebox
 from controllers.controlador import Controlador
 
@@ -7,11 +8,9 @@ class VentanaPrincipal:
         self.ventana = tk.Tk()
         self.ventana.title("Gestión Equipo de Fútbol - Grupo N°6")
         self.ventana.geometry("600x600")
+        self.ventana.configure(bg="#F5F5F7") 
         
-        # Crear el controlador
         self.controlador = Controlador()
-        
-        # Crear el menú
         self._crear_menu()
     
     def _crear_menu(self):
@@ -29,11 +28,9 @@ class VentanaPrincipal:
         menu_jugadores.add_command(label="Salir", command=self.ventana.quit)
     
     def agregar_jugador(self):
-        """Abrir ventana para agregar jugador"""
         VentanaAgregarJugador(self.controlador, self.ventana)
     
     def mostrar_jugadores(self):
-        """Mostrar todos los jugadores"""
         jugadores = self.controlador.obtener_jugadores()
         if jugadores:
             VentanaMostrarJugadores(jugadores, self.ventana)
@@ -49,64 +46,108 @@ class VentanaAgregarJugador:
         self.controlador = controlador
         self.ventana = tk.Toplevel(parent)
         self.ventana.title("Agregar Jugador")
-        self.ventana.geometry("450x500")
+        self.ventana.geometry("450x600")
         
-        # Campos del formulario (adaptados a tu BD)
-        tk.Label(self.ventana, text="Apellido:", font=("Arial", 10)).pack(pady=5)
-        self.apellido_entry = tk.Entry(self.ventana, width=30)
-        self.apellido_entry.pack(pady=5)
+        self.ventana.configure(bg="#F5F5F7")
+        self.ventana.resizable(False, False)
         
-        tk.Label(self.ventana, text="Número de Camiseta:", font=("Arial", 10)).pack(pady=5)
-        self.numero_entry = tk.Entry(self.ventana, width=30)
-        self.numero_entry.pack(pady=5)
+        estilo = ttk.Style()
+        estilo.theme_use('clam')
+        estilo.configure("TLabel", background="#F5F5F7", font=("Segoe UI", 10))
+        estilo.configure("TRadiobutton", background="#F5F5F7", font=("Segoe UI", 10))
+        estilo.configure("TButton", font=("Segoe UI", 10, "bold"), padding=5)
         
-        tk.Label(self.ventana, text="Posición:", font=("Arial", 10)).pack(pady=5)
-        self.posicion_entry = tk.Entry(self.ventana, width=30)
-        self.posicion_entry.pack(pady=5)
+        titulo = tk.Label(self.ventana, text="Ficha del Jugador", font=("Segoe UI", 16, "bold"), bg="#F5F5F7", fg="#1D1D1F")
+        titulo.pack(pady=(20, 15))
         
-        tk.Label(self.ventana, text="Minutos Jugados:", font=("Arial", 10)).pack(pady=5)
-        self.minutos_entry = tk.Entry(self.ventana, width=30)
-        self.minutos_entry.pack(pady=5)
+        form_frame = tk.Frame(self.ventana, bg="#F5F5F7")
+        form_frame.pack(fill=tk.BOTH, expand=True, padx=40)
+
+        ttk.Label(form_frame, text="Apellido:").pack(anchor="w", pady=(5, 0))
+        self.apellido_entry = ttk.Entry(form_frame, width=40, font=("Segoe UI", 10))
+        self.apellido_entry.pack(fill=tk.X, pady=(0, 10))
         
-        tk.Label(self.ventana, text="Goles Marcados:", font=("Arial", 10)).pack(pady=5)
-        self.goles_entry = tk.Entry(self.ventana, width=30)
-        self.goles_entry.pack(pady=5)
+        ttk.Label(form_frame, text="Número de Camiseta:").pack(anchor="w", pady=(5, 0))
+        self.numero_entry = ttk.Entry(form_frame, width=40, font=("Segoe UI", 10))
+        self.numero_entry.pack(fill=tk.X, pady=(0, 10))
         
-        tk.Label(self.ventana, text="Tipo de Jugador:", font=("Arial", 10)).pack(pady=5)
+        ttk.Label(form_frame, text="Posición:").pack(anchor="w", pady=(5, 0))
+        self.posicion_var = tk.StringVar()
+        self.posicion_combo = ttk.Combobox(form_frame, textvariable=self.posicion_var, state="readonly", font=("Segoe UI", 10))
+        self.posicion_combo['values'] = ("Defensor", "Central", "Delantero")
+        self.posicion_combo.pack(fill=tk.X, pady=(0, 10))
+        
+        row_frame = tk.Frame(form_frame, bg="#F5F5F7")
+        row_frame.pack(fill=tk.X, pady=(5, 10))
+        
+        col1 = tk.Frame(row_frame, bg="#F5F5F7")
+        col1.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5))
+        ttk.Label(col1, text="Minutos Jugados:").pack(anchor="w")
+        self.minutos_entry = ttk.Entry(col1, font=("Segoe UI", 10))
+        self.minutos_entry.pack(fill=tk.X)
+        
+        col2 = tk.Frame(row_frame, bg="#F5F5F7")
+        col2.pack(side=tk.RIGHT, fill=tk.X, expand=True, padx=(5, 0))
+        ttk.Label(col2, text="Goles Marcados:").pack(anchor="w")
+        self.goles_entry = ttk.Entry(col2, font=("Segoe UI", 10))
+        self.goles_entry.pack(fill=tk.X)
+        
+        ttk.Label(form_frame, text="Rol en el equipo:").pack(anchor="w", pady=(10, 5))
         self.tipo_var = tk.StringVar(value="campo")
-        tk.Radiobutton(self.ventana, text="Arquero", variable=self.tipo_var, value="arquero").pack()
-        tk.Radiobutton(self.ventana, text="Campo", variable=self.tipo_var, value="campo").pack()
         
-        # Botón guardar
-        tk.Button(self.ventana, text="Guardar Jugador", command=self.guardar_jugador, 
-                  bg="green", fg="white", font=("Arial", 10)).pack(pady=20)
-    
+        radio_frame = tk.Frame(form_frame, bg="#F5F5F7")
+        radio_frame.pack(fill=tk.X, pady=(0, 15))
+        ttk.Radiobutton(radio_frame, text="Jugador de Campo", variable=self.tipo_var, value="campo", command=self.actualizar_estado_campos).pack(side=tk.LEFT, padx=(0, 20))
+        ttk.Radiobutton(radio_frame, text="Arquero", variable=self.tipo_var, value="arquero", command=self.actualizar_estado_campos).pack(side=tk.LEFT)
+        
+        tk.Button(self.ventana, text="Guardar Registro", command=self.guardar_jugador, 
+                  bg="#007AFF", fg="white", font=("Segoe UI", 11, "bold"), 
+                  relief="flat", cursor="hand2", pady=8, padx=20).pack(pady=20)
+
+    def actualizar_estado_campos(self):
+        if self.tipo_var.get() == "arquero":
+            self.posicion_combo.set("")
+            self.posicion_combo.config(state="disabled")
+            
+            self.goles_entry.config(state="normal")
+            self.goles_entry.delete(0, tk.END)
+            self.goles_entry.insert(0, "0")
+            self.goles_entry.config(state="disabled")
+        else:
+            self.posicion_combo.config(state="readonly")
+            self.goles_entry.config(state="normal")
+            self.goles_entry.delete(0, tk.END)
+
     def guardar_jugador(self):
-        """Guardar el jugador en la base de datos"""
-        apellido = self.apellido_entry.get()
-        numero_camiseta = self.numero_entry.get()
-        posicion = self.posicion_entry.get()
-        minutos_jugados = self.minutos_entry.get()
-        goles_marcados = self.goles_entry.get()
+        apellido = self.apellido_entry.get().strip()
+        numero_camiseta = self.numero_entry.get().strip()
+        minutos_jugados = self.minutos_entry.get().strip()
         tipo_jugador = self.tipo_var.get()
         
-        # Validar campos
-        if not all([apellido, numero_camiseta, posicion, minutos_jugados, goles_marcados]):
-            messagebox.showerror("Error", "Por favor complete todos los campos")
+        if tipo_jugador == "arquero":
+            posicion = "Arquero"
+            goles_marcados = "0"
+        else:
+            posicion = self.posicion_combo.get()
+            goles_marcados = self.goles_entry.get().strip()
+
+        if not all([apellido, numero_camiseta, minutos_jugados]) or (tipo_jugador == "campo" and (not posicion or not goles_marcados)):
+            messagebox.showerror("Error", "Por favor complete todos los campos correspondientes.")
             return
-        
-        # Validar que número, minutos y goles sean números
+
         try:
             numero_camiseta = int(numero_camiseta)
             minutos_jugados = int(minutos_jugados)
             goles_marcados = int(goles_marcados)
+            
+            if numero_camiseta <= 0 or minutos_jugados < 0 or goles_marcados < 0:
+                messagebox.showerror("Error", "Los números no pueden ser negativos.")
+                return
         except ValueError:
-            messagebox.showerror("Error", "Número, minutos y goles deben ser valores numéricos")
+            messagebox.showerror("Error", "Número, minutos y goles deben ser números enteros válidos.")
             return
-        
-        # Guardar en la base de datos
-        self.controlador.guardar_jugador(apellido, numero_camiseta, posicion, 
-                                         minutos_jugados, goles_marcados, tipo_jugador)
+
+        self.controlador.guardar_jugador(apellido, numero_camiseta, posicion, minutos_jugados, goles_marcados, tipo_jugador)
         self.ventana.destroy()
 
 
@@ -115,29 +156,29 @@ class VentanaMostrarJugadores:
         self.ventana = tk.Toplevel(parent)
         self.ventana.title("Lista de Jugadores")
         self.ventana.geometry("600x400")
+        self.ventana.configure(bg="#F5F5F7")
         
-        # Crear frame con scrollbar
-        frame = tk.Frame(self.ventana)
+        frame = tk.Frame(self.ventana, bg="#F5F5F7")
         frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
         
         scrollbar = tk.Scrollbar(frame)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         
-        lista_texto = tk.Text(frame, height=20, width=70, yscrollcommand=scrollbar.set)
+        lista_texto = tk.Text(frame, height=20, width=70, yscrollcommand=scrollbar.set, font=("Segoe UI", 10))
         lista_texto.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.config(command=lista_texto.yview)
         
-        # Mostrar jugadores
         for jugador in jugadores:
-            lista_texto.insert(tk.END, f"ID: {jugador.get('id')}\n")
-            lista_texto.insert(tk.END, f"Apellido: {jugador.get('apellido')}\n")
-            lista_texto.insert(tk.END, f"N° Camiseta: {jugador.get('numero_camiseta')}\n")
-            lista_texto.insert(tk.END, f"Posición: {jugador.get('posicion')}\n")
-            lista_texto.insert(tk.END, f"Minutos: {jugador.get('minutos_jugados')}\n")
-            lista_texto.insert(tk.END, f"Goles: {jugador.get('goles_marcados')}\n")
-            lista_texto.insert(tk.END, f"Tipo: {jugador.get('tipo_jugador')}\n")
+            lista_texto.insert(tk.END, f"ID: {jugador.get('id', 'N/A')}\n")
+            lista_texto.insert(tk.END, f"Apellido: {jugador.get('apellido', 'N/A')}\n")
+            lista_texto.insert(tk.END, f"N° Camiseta: {jugador.get('numero_camiseta', 'N/A')}\n")
+            lista_texto.insert(tk.END, f"Posición: {jugador.get('posicion', 'N/A')}\n")
+            lista_texto.insert(tk.END, f"Minutos: {jugador.get('minutos_jugados', 'N/A')}\n")
+            lista_texto.insert(tk.END, f"Goles: {jugador.get('goles_marcados', 'N/A')}\n")
+            lista_texto.insert(tk.END, f"Tipo: {jugador.get('tipo_jugador', 'N/A')}\n")
             lista_texto.insert(tk.END, "-" * 50 + "\n")
         
         lista_texto.config(state=tk.DISABLED)
         
-        tk.Button(self.ventana, text="Cerrar", command=self.ventana.destroy).pack(pady=10)
+        tk.Button(self.ventana, text="Cerrar", command=self.ventana.destroy,
+                  bg="#FF3B30", fg="white", font=("Segoe UI", 10, "bold"), relief="flat", cursor="hand2", padx=10).pack(pady=10)
