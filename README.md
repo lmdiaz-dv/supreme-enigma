@@ -1,4 +1,5 @@
 # Laboratorio de Lenguajes TP06 - Equipo de Fútbol
+# Gruopo N°6
 ## Requisito Previos
 
 - Python 3.6 o superior

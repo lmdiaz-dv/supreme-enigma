@@ -74,17 +74,19 @@ def mostrar_jugadores():
         messagebox.showinfo("Jugadores", "No hay jugadores cargados")
 
 ventana = tk.Tk()
-ventana.title("Gestión Equipo de Fútbol")
-ventana.geometry("400x300")
+ventana.title("Gestión Equipo de Fútbol - Grupo N°6")
+ventana.geometry("600x600")
 
 menu = tk.Menu(ventana)
 ventana.config(menu=menu)
 
 menu_jugadores = tk.Menu(menu, tearoff=0)
+menu_vista = tk.Menu(menu, tearoff=0)
 menu.add_cascade(label="Opciones", menu=menu_jugadores)
+menu.add_cascade(label="Ver jugadores", menu=menu_vista)
 
 menu_jugadores.add_command(label="Agregar jugador", command=agregar_jugador)
-menu_jugadores.add_command(label="Mostrar jugadores", command=mostrar_jugadores)
+menu_vista.add_command(label="Mostrar jugadores", command=mostrar_jugadores)
 menu_jugadores.add_separator()
 menu_jugadores.add_command(label="Salir", command=ventana.quit)
 
