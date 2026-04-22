@@ -1,44 +1,46 @@
-from tkinter import messagebox, simpledialog
-from models.jugador import JugadorCampo, Arquero
-from models.equipo import Equipo
+from database.database import Database
+from tkinter import messagebox
 
-class ControladorEquipo:
+class Controlador:
     def __init__(self):
-        self.miEquipo = Equipo()
-    
-    def agregar_jugador(self):
-        posiciones = ["arquero", "defensor", "mediocampista", "delantero"]
-        posiciones_de_campo = ["defensor", "mediocampista", "delantero"]
+        self.db = Database()
         
-        try:
-            numero = int(simpledialog.askstring("Info", "Número de camiseta"))
-            apellido = simpledialog.askstring("Info", "Apellido")
-            posicion = simpledialog.askstring("Info", "Tipo (arquero / defensor / mediocampista / delantero )")
-            
-            while posicion not in posiciones:
-                posicion = simpledialog.askstring("Tipo incorrecto",
-                                                  "Tipo (arquero / defensor / mediocampista / delantero )")
-            
-            minutos_jugados = int(simpledialog.askstring("Info", "Minutos jugados"))
-
-            if posicion == "arquero":
-                jugador = Arquero(numero, apellido, minutos_jugados)
-            elif posicion in posiciones_de_campo:
-                goles = int(simpledialog.askstring("Info", "Goles"))
-                jugador = JugadorCampo(numero, apellido, posicion, minutos_jugados, goles)
-            else:
-                messagebox.showerror("Error", "Tipo inválido")
-                return
-
-            self.miEquipo.agregar(jugador)
-            messagebox.showinfo("Éxito", "Jugador agregado correctamente")
-
-        except:
-            messagebox.showerror("Error", "Datos inválidos")
+    def iniciar_conexion(self):
+        """Iniciar conexión a BD"""
+        return self.db.connect()
     
-    def mostrar_jugadores(self):
-        datos = self.miEquipo.mostrar_equipo()
-        if datos:
-            messagebox.showinfo("Jugadores", datos)
-        else:
-            messagebox.showinfo("Jugadores", "No hay jugadores cargados")
+    def cerrar_conexion(self):
+        """Cerrar conexión"""
+        self.db.disconnect()
+    
+    def obtener_equipos(self):
+        if self.db.connect():
+            equipos = self.db.fetch_all("SELECT * FROM equipos")
+            self.db.disconnect()
+            return equipos
+        return []
+    
+    def obtener_jugadores(self):
+        """Obtener todos los jugadores"""
+        if self.db.connect():
+            jugadores = self.db.fetch_all("SELECT * FROM jugadores")
+            self.db.disconnect()
+            return jugadores
+        return []
+    
+    def guardar_jugador(self, apellido, numero_camiseta, posicion, minutos_jugados, goles_marcados, tipo_jugador):
+        """Guardar un nuevo jugador en la base de datos"""
+        query = """INSERT INTO jugadores 
+                   (apellido, numero_camiseta, posicion, minutos_jugados, goles_marcados, tipo_jugador) 
+                   VALUES (%s, %s, %s, %s, %s, %s)"""
+        params = (apellido, numero_camiseta, posicion, minutos_jugados, goles_marcados, tipo_jugador)
+        
+        if self.db.connect():
+            resultado = self.db.execute_query(query, params)
+            self.db.disconnect()
+            if resultado:
+                messagebox.showinfo("Éxito", f"Jugador {apellido} agregado correctamente")
+            else:
+                messagebox.showerror("Error", "No se pudo agregar el jugador")
+            return resultado
+        return False

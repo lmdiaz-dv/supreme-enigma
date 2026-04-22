@@ -1,1 +1,3 @@
-from .controlador import ControladorEquipo
+from .controlador import Controlador
+
+__all__ = ['Controlador']
