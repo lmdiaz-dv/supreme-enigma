@@ -8,10 +8,11 @@ class VentanaPrincipal:
         self.ventana = tk.Tk()
         self.ventana.title("Gestión Equipo de Fútbol - Grupo N°6")
         self.ventana.geometry("600x600")
-        self.ventana.configure(bg="#F5F5F7") 
+        self.ventana.configure(bg="#F5F5F7")
         
         self.controlador = Controlador()
         self._crear_menu()
+        self._crear_dashboard()
     
     def _crear_menu(self):
         menu = tk.Menu(self.ventana)
@@ -26,6 +27,30 @@ class VentanaPrincipal:
         menu_vista.add_command(label="Mostrar jugadores", command=self.mostrar_jugadores)
         menu_jugadores.add_separator()
         menu_jugadores.add_command(label="Salir", command=self.ventana.quit)
+
+    def _crear_dashboard(self):
+        lbl_titulo = tk.Label(self.ventana, text="Gestión de Plantel", 
+                              font=("Segoe UI", 28, "bold"), bg="#F5F5F7", fg="#1D1D1F")
+        lbl_titulo.pack(pady=(70, 5))
+
+        lbl_sub = tk.Label(self.ventana, text="Panel de Administración del Equipo", 
+                           font=("Segoe UI", 12), bg="#F5F5F7", fg="#86868B")
+        lbl_sub.pack(pady=(0, 50))
+
+        frame_botones = tk.Frame(self.ventana, bg="#F5F5F7")
+        frame_botones.pack()
+
+        tk.Button(frame_botones, text="Agregar Nuevo Jugador", command=self.agregar_jugador,
+                  bg="#007AFF", fg="white", font=("Segoe UI", 12, "bold"), 
+                  relief="flat", cursor="hand2", width=25, pady=12).pack(pady=10)
+
+        tk.Button(frame_botones, text="Ver Plantel Completo", command=self.mostrar_jugadores,
+                  bg="#34C759", fg="white", font=("Segoe UI", 12, "bold"), 
+                  relief="flat", cursor="hand2", width=25, pady=12).pack(pady=10)
+
+        lbl_footer = tk.Label(self.ventana, text="UNSAdA - Laboratorio de Lenguajes\nTrabajo Práctico N°6 - Grupo 6", 
+                              font=("Segoe UI", 9), bg="#F5F5F7", fg="#86868B", justify="center")
+        lbl_footer.pack(side=tk.BOTTOM, pady=30)
     
     def agregar_jugador(self):
         VentanaAgregarJugador(self.controlador, self.ventana)
@@ -35,12 +60,11 @@ class VentanaPrincipal:
         if jugadores:
             VentanaMostrarJugadores(jugadores, self.ventana)
         else:
-            messagebox.showinfo("Info", "No hay jugadores registrados")
+            messagebox.showinfo("Info", "No hay jugadores registrados en la base de datos.")
     
     def ejecutar(self):
         self.ventana.mainloop()
-
-
+        
 class VentanaAgregarJugador:
     def __init__(self, controlador, parent):
         self.controlador = controlador
