@@ -1,8 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 
-
-# Definimos la clase base Jugador
 class Jugador:
     def __init__(self, numero_camiseta, apellido, posicion, minutos_jugados):
         self.numero_camiseta = numero_camiseta
@@ -13,8 +11,6 @@ class Jugador:
     def mostrar_jugador(self):
         return f"{self.numero_camiseta} - {self.apellido} ({self.posicion}) - Minutos jugados: {self.minutos_jugados}"
 
-
-# Definimos la clase que hereda de Jugador (el jugador de campo es un jugador base con la diferencia que puede marcar goles)
 class JugadorCampo(Jugador):
     def __init__(self, numero_camiseta, apellido, posicion, minutos_jugados, goles_marcados):
         super().__init__(numero_camiseta, apellido, posicion, minutos_jugados)
@@ -23,14 +19,10 @@ class JugadorCampo(Jugador):
     def mostrar_jugador(self):
         return super().mostrar_jugador() + f" - Goles: {self.goles_marcados}"
 
-
-# Definir la clase Arquero, que hereda de Jugador de base y no puede marcar goles
 class Arquero(Jugador):
     def __init__(self, numero_camiseta, apellido, minutos_jugados):
         super().__init__(numero_camiseta, apellido, "Arquero", minutos_jugados)
 
-
-# El equipo es una lista de jugadores
 class Equipo:
     def __init__(self):
         self.jugadores = []
@@ -44,8 +36,6 @@ class Equipo:
 
 miEquipo = Equipo()
 
-
-# Carga desde interfaz
 def agregar_jugador():
     posiciones = ["arquero", "defensor", "mediocampista", "delantero"]
     posiciones_de_campo = ["defensor", "mediocampista", "delantero"]
@@ -82,9 +72,6 @@ def mostrar_jugadores():
         messagebox.showinfo("Jugadores", datos)
     else:
         messagebox.showinfo("Jugadores", "No hay jugadores cargados")
-
-
-# TKinter ventana principal
 
 ventana = tk.Tk()
 ventana.title("Gestión Equipo de Fútbol")
